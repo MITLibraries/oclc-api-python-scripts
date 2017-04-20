@@ -7,12 +7,12 @@ baseURL = 'http://www.worldcat.org/webservices/catalog/search/opensearch?q='
 baseURL2 = 'http://www.worldcat.org/webservices/catalog/content/'
 wskey = secrets.wskey
 f=csv.writer(open('resultsTitle.csv', 'wb'))
-f.writerow(['bibNumber']+['horizonTitle']+['oclcTitle']+['url']+['author']+['publisher']+['encoding']+['lang']+['date'])
+f.writerow(['bibNumber']+['searchTitle']+['oclcTitle']+['url']+['author']+['publisher']+['encoding']+['lang']+['date'])
 with open('oclcRecordsTitle.txt') as txt:
     for row in txt:
         bibNumber = row[:row.index('|')]
-        horizonTitle = row[row.index('|')+1:]
-        search = horizonTitle.replace(' ','%20')
+        searchTitle = row[row.index('|')+1:]
+        search = searchTitle.replace(' ','%20')
         response = requests.get(baseURL+search.strip()+'&format=rss&wskey='+wskey).content
         records = BeautifulSoup(response, "lxml").findAll('item')
         for record in records:
@@ -42,4 +42,4 @@ with open('oclcRecordsTitle.txt') as txt:
                     publisher = record2.find('datafield', {'tag' : '264'}).find('subfield', {'code' : 'b'}).text.encode('utf-8')
                 except:
                     publisher = ''
-            f.writerow([bibNumber]+[horizonTitle]+[title]+[url]+[author]+[publisher]+[encoding]+[lang]+[date])
+            f.writerow([bibNumber]+[searchTitle]+[title]+[url]+[author]+[publisher]+[encoding]+[lang]+[date])
