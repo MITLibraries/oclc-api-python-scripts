@@ -8,6 +8,9 @@ More information about WSKeys is available [here](https://www.oclc.org/developer
 #### [oclcIsbn.py](oclcIsbn.py)
 This script retrieves OCLC numbers and titles based on a text file of ISBNs.
 
+#### [oclcTitleBorrowDirect.py](oclcTitleBorrowDirect.py)
+This script retrieves OCLC data based on a CSV from the BorrowDirect Data Repository (Beta), on the Penn Library Data Farm.
+
 #### [oclcTitlePhraseEnhanced.py](oclcTitlePhraseEnhanced.py)
 This script retrieves OCLC records based on a text file of titles and extracts the title, URL, author, publisher, encoding level, language, and date.
 

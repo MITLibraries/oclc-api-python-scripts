@@ -50,3 +50,4 @@ secrets.py
 data/*
 !data/.keep
 .profile
+*.csv
