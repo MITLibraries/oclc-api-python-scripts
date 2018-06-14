@@ -51,3 +51,4 @@ data/*
 !data/.keep
 .profile
 *.csv
+*.xslx

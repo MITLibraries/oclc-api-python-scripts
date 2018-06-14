@@ -3,20 +3,40 @@ from bs4 import BeautifulSoup
 import csv
 import secrets
 import urllib
+import re
 
 baseURL = 'http://www.worldcat.org/webservices/catalog/search/opensearch?q='
 baseURL2 = 'http://www.worldcat.org/webservices/catalog/content/'
 wskey = secrets.wskey
-f=csv.writer(open('oclcTitleSearchMatches.csv', 'wb'))
-f.writerow(['bibNumber']+['searchTitle']+['oclcTitle']+['oclcNum']+['url']+['author']+['publisher']+['physDesc']+['encoding']+['date'])
-f2=csv.writer(open('oclcTitleSearchNonMatches.csv', 'wb'))
-f2.writerow(['bibNumber']+['searchTitle'])
+f=csv.writer(open('oclcTitleDateSearchMatches.csv', 'wb'))
+f.writerow(['bibNumber']+['searchTitle']+['searchDate']+['searchType']+['oclcTitle']+['date']+['oclcNum']+['url']+['author']+['publisher']+['physDesc']+['encoding'])
+f2=csv.writer(open('oclcTitleDateSearchNonMatches.csv', 'wb'))
+f2.writerow(['bibNumber']+['searchTitle']+['searchDate'])
 with open('oclcRecordsTitle.csv') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         bibNumber = row['bib#']
         print bibNumber
+        searchType = 'date & title'
         searchTitle = row['245 - all subfields'][2:]
+        if row['260 - all subfields'] != '':
+            if 'c' in row['260 - all subfields']:
+                searchDate = row['260 - all subfields']
+                searchDate = searchDate[searchDate.index('c')+2:].strip()
+                searchDate = re.sub('[^\d-]+', '', searchDate)
+                query = 'srw.yr+%3D+"'+searchDate+'"+and+'
+            else:
+                query = ''
+        elif row['260 - all subfields'] != '':
+            if 'c' in row['264 - all subfields']:
+                searchDate = row['264 - all subfields']
+                searchDate = searchDate[searchDate.index('c')+2:].strip()
+                searchDate = re.sub('[^\d-]+', '', searchDate)
+                query = 'srw.yr+%3D+"'+searchDate+'"+and+'
+            else:
+                query = ''
+        else:
+            query = ''
         originalTitle = searchTitle
         if 'b' in searchTitle:
             searchTitle = searchTitle[:searchTitle.index('b')] + ' ' + searchTitle[searchTitle.index('b')+2:]
@@ -28,9 +48,11 @@ with open('oclcRecordsTitle.csv') as csvfile:
             searchTitle = searchTitle[:searchTitle.index('c')]
         else:
             pass
-        search = urllib.quote(searchTitle)
-        response = requests.get(baseURL+search.strip()+'&format=rss&wskey='+wskey).content
-        records = BeautifulSoup(response, "lxml").findAll('item')
+        searchTitleURL = urllib.quote(searchTitle).strip()
+        query = baseURL + query + 'srw.ti+%3D+"'+ searchTitleURL + '"&format=rss&wskey='+wskey
+        print query
+        response = requests.get(query).content
+        records = BeautifulSoup(response, 'lxml').findAll('item')
         if records != []:
             for record in records:
                 oclcTitle = record.find('title').text.encode('utf-8')
@@ -58,7 +80,7 @@ with open('oclcRecordsTitle.csv') as csvfile:
                 except:
                     physDesc = ''
                 if type == ' ' and (catLang == 'eng' or catLang == ''):
-                    f.writerow([bibNumber]+[searchTitle]+[oclcTitle]+[oclcNum]+[url]+[author]+[publisher]+[physDesc]+[encoding]+[date])
+                    f.writerow([bibNumber]+[searchTitle]+[searchDate]+[searchType]+[oclcTitle]+[date]+[oclcNum]+[url]+[author]+[publisher]+[physDesc]+[encoding])
             f.writerow(['']+['']+['']+['']+['']+['']+['']+['']+['']+[''])
         else:
-            f2.writerow([bibNumber]+[searchTitle])
+            f2.writerow([bibNumber]+[searchTitle]+[searchDate])
