@@ -18,25 +18,31 @@ with open('oclcRecordsTitle.csv') as csvfile:
         bibNumber = row['bib#']
         print bibNumber
         searchType = 'date & title'
-        searchTitle = row['245 - all subfields'][2:]
-        if row['260 - all subfields'] != '':
-            if 'c' in row['260 - all subfields']:
-                searchDate = row['260 - all subfields']
-                searchDate = searchDate[searchDate.index('c')+2:].strip()
-                searchDate = re.sub('[^\d-]+', '', searchDate)
-                query = 'srw.yr+%3D+"'+searchDate+'"+and+'
-            else:
-                query = ''
-        elif row['260 - all subfields'] != '':
-            if 'c' in row['264 - all subfields']:
-                searchDate = row['264 - all subfields']
-                searchDate = searchDate[searchDate.index('c')+2:].strip()
-                searchDate = re.sub('[^\d-]+', '', searchDate)
-                query = 'srw.yr+%3D+"'+searchDate+'"+and+'
-            else:
-                query = ''
+        if row['Date 1 from 008'] != '':
+            searchDate = row['Date 1 from 008']
+            query = 'srw.yr+%3D+"'+searchDate+'"+and+'
         else:
             query = ''
+        ##deprecated method for extracting the date from the 260 or 264
+        # if row['260 - all subfields'] != '':
+        #     if 'c' in row['260 - all subfields']:
+        #         searchDate = row['260 - all subfields']
+        #         searchDate = searchDate[searchDate.index('c')+2:].strip()
+        #         searchDate = re.sub('[^\d-]+', '', searchDate)
+        #         query = 'srw.yr+%3D+"'+searchDate+'"+and+'
+        #     else:
+        #         query = ''
+        # elif row['264 - all subfields'] != '':
+        #     if 'c' in row['264 - all subfields']:
+        #         searchDate = row['264 - all subfields']
+        #         searchDate = searchDate[searchDate.index('c')+2:].strip()
+        #         searchDate = re.sub('[^\d-]+', '', searchDate)
+        #         query = 'srw.yr+%3D+"'+searchDate+'"+and+'
+        #     else:
+        #         query = ''
+        # else:
+        #     query = ''
+        searchTitle = row['245 - all subfields'][2:]
         originalTitle = searchTitle
         if 'b' in searchTitle:
             searchTitle = searchTitle[:searchTitle.index('b')] + ' ' + searchTitle[searchTitle.index('b')+2:]
