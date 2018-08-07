@@ -17,7 +17,7 @@ Retrieves OCLC records based on a text file of titles and dates and extracts the
 #### [oclcTitlePhraseBorrowDirect.py](oclcTitlePhraseBorrowDirect.py)
 Retrieves OCLC data based on a CSV from the BorrowDirect Data Repository (Beta), on the Penn Library Data Farm.
 
-#### [oclcTitlePhraseEnhanced.py](oclcTitlePhraseEnhanced.py)
+#### [oclcTitlePhrase.py](oclcTitlePhrase.py)
 Retrieves OCLC records based on a text file of titles and extracts the title, URL, author, publisher, encoding level, physical description, language, and date.
 
 #### [worldcatIdentities.py](worldcatIdentities.py)
