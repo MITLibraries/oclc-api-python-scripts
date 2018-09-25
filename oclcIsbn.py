@@ -18,7 +18,6 @@ with open('isbns.txt') as txt:
                 subtitle = record.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'b'}).text.encode('utf-8')
                 fullTitle = title + subtitle
             except:
-                subtitle = ''
                 fullTitle = title
         except:
             fullTitle = ''
