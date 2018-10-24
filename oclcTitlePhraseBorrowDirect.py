@@ -5,14 +5,27 @@ import secrets
 import urllib
 import re
 import time
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--fileName', help='the file of Borrow Direct data. optional - if not provided, the script will ask for input')
+args = parser.parse_args()
+
+if args.fileName:
+    fileName = args.fileName
+else:
+    fileName = raw_input('Enter the file of Borrow Direct data: ')
 
 startTime = time.time()
 
-fileName = raw_input('Enter file name: ')
 fileNameWithoutExtension = fileName[:fileName.index('.')]
 
 baseURL = 'http://www.worldcat.org/webservices/catalog/search/opensearch?q='
 baseURL2 = 'http://www.worldcat.org/webservices/catalog/content/'
+
+with open(fileName) as csvfile:
+    reader = csv.DictReader(csvfile)
+    rowCount = len(list(reader))
 
 wskey = secrets.wskey
 f=csv.writer(open(fileNameWithoutExtension+'oclcSearchMatches.csv', 'wb'))
@@ -22,6 +35,8 @@ f2.writerow(['searchOoclcNum']+['borrower']+['lender']+['status']+['patronType']
 with open(fileName) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
+        rowCount -= 1
+        print 'Items remaining: ', rowCount
         borrower = row['BORROWER']
         lender = row['LENDER']
         status = row['STATUS']
@@ -34,14 +49,17 @@ with open(fileName) as csvfile:
         searchPublisher = row['PUBLISHER']
         searchDate = row['PUBLICATION YEAR']
         try:
-            response = requests.get('http://www.worldcat.org/webservices/catalog/content/'+searchOclcNum+'?format=rss&wskey='+wskey).content
+            response = requests.get('http://www.worldcat.org/webservices/catalog/content/'+searchOclcNum+'?format=rss&wskey='+wskey)
+            response = response.content
             record = BeautifulSoup(response, "lxml").find('record')
             oclcNum = record.find('controlfield', {'tag' : '001'}).text
+            print 'search oclc #'
         except:
             originalTitle = searchTitle
             search = urllib.quote(searchTitle)
-            print search
-            response = requests.get(baseURL+search.strip()+'&count=1&format=rss&wskey='+wskey).content
+            response = requests.get(baseURL+search.strip()+'&count=1&format=rss&wskey='+wskey)
+            print 'search title'
+            response = response.content
             record = BeautifulSoup(response, "lxml").findAll('item')
             if record != []:
                 record = record[0]
@@ -49,7 +67,9 @@ with open(fileName) as csvfile:
                 oclcNum = url.replace('http://worldcat.org/oclc/','')
                 oclcAuthor = record.find('author').find('name').text.encode('utf-8')
 
-        response2 = requests.get(baseURL2+oclcNum+'?servicelevel=full&classificationScheme=LibraryOfCongress&wskey='+wskey).content
+        response2 = requests.get(baseURL2+oclcNum+'?servicelevel=full&classificationScheme=LibraryOfCongress&wskey='+wskey)
+        print 'search full record'
+        response2 = response2.content
         try:
             record2 = BeautifulSoup(response2, "lxml").find('record')
             try:
