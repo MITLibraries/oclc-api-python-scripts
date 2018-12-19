@@ -5,7 +5,7 @@ from fuzzywuzzy import fuzz
 import urllib
 
 baseURL = 'http://www.worldcat.org/identities/find?fullName='
-f=csv.writer(open('worldcatIdentitiesResults.csv', 'wb'))
+f=csv.writer(open('worldcatIdentitiesResults.csv', 'w'))
 f.writerow(['search']+['result']+['ratio']+['partialRatio']+['tokenSort']+['tokenSet']+['avg']+['uri'])
 with open('people.txt') as txt:
     for row in txt:
@@ -14,7 +14,7 @@ with open('people.txt') as txt:
         response = requests.get(url).content
         record = BeautifulSoup(response, "lxml").find('html').find('body').find('nameauthorities').find('match')
         try:
-            label = record.find('establishedform').text.encode('utf-8')
+            label = record.find('establishedform').text
             uri = record.find('uri').text
         except:
             label = ''

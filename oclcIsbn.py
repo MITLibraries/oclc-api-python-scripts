@@ -5,7 +5,7 @@ import secrets
 
 baseURL = 'http://www.worldcat.org/webservices/catalog/content/isbn/'
 wskey = secrets.wskey
-f=csv.writer(open('isbnResults.csv', 'wb'))
+f=csv.writer(open('isbnResults.csv', 'w'))
 f.writerow(['isbn']+['001']+['245'])
 with open('isbns.txt') as txt:
     for row in txt:
@@ -13,9 +13,9 @@ with open('isbns.txt') as txt:
             response = requests.get(baseURL+row.strip()+'?wskey='+wskey).content
             record = BeautifulSoup(response, "lxml").find('record')
             oclcNum = record.find('controlfield', {'tag' : '001'}).text
-            title = record.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'a'}).text.encode('utf-8')
+            title = record.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'a'}).text
             try:
-                subtitle = record.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'b'}).text.encode('utf-8')
+                subtitle = record.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'b'}).text
                 fullTitle = title + subtitle
             except:
                 fullTitle = title
