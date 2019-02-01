@@ -8,7 +8,7 @@ startTime = time.time()
 
 baseURL = 'http://www.worldcat.org/webservices/catalog/content/'
 wskey = secrets.wskey
-f=csv.writer(open('newOclcNumResults.csv', 'wb'))
+f=csv.writer(open('newOclcNumResults.csv', 'w'))
 f.writerow(['bibNum']+['search']+['newOclcNum'])
 
 filename = 'noHathiTrustMatch.csv'
@@ -18,7 +18,7 @@ with open(filename) as csvfile:
     counter = 0
     for row in reader:
         counter = counter + 1
-        print counter
+        print(counter)
         search = row['oclcNum']
         bibNum = row['bibNum']
         try:
@@ -29,7 +29,7 @@ with open(filename) as csvfile:
             fullTitle = ''
             oclcNum = ''
         if search.lstrip('0') != oclcNum:
-            print search, oclcNum
+            print(search, oclcNum)
             f.writerow([bibNum]+[search]+[oclcNum])
         else:
             oclcNum = ''
@@ -38,4 +38,4 @@ with open(filename) as csvfile:
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)
 h, m = divmod(m, 60)
-print 'Total script run time: ', '%d:%02d:%02d' % (h, m, s)
+print('Total script run time: ', '%d:%02d:%02d' % (h, m, s))

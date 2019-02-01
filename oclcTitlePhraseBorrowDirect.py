@@ -14,7 +14,7 @@ args = parser.parse_args()
 if args.fileName:
     fileName = args.fileName
 else:
-    fileName = raw_input('Enter the file of Borrow Direct data: ')
+    fileName = input('Enter the file of Borrow Direct data: ')
 
 startTime = time.time()
 
@@ -28,21 +28,21 @@ with open(fileName) as csvfile:
     rowCount = len(list(reader))
 
 wskey = secrets.wskey
-f=csv.writer(open(fileNameWithoutExtension+'oclcSearchMatches.csv', 'wb'))
+f=csv.writer(open(fileNameWithoutExtension+'oclcSearchMatches.csv', 'w'))
 f.writerow(['searchOclcNum']+['borrower']+['lender']+['status']+['patronType']+['isbn']+['searchTitle']+['searchAuthor']+['searchDate']+['oclcNum']+['oclcTitle']+['oclcAuthor']+['oclcPublisher']+['callNumLetters']+['callNumFull']+['physDesc']+['oclcDate'])
-f2=csv.writer(open(fileNameWithoutExtension+'oclcSearchNonMatches.csv', 'wb'))
+f2=csv.writer(open(fileNameWithoutExtension+'oclcSearchNonMatches.csv', 'w'))
 f2.writerow(['searchOoclcNum']+['borrower']+['lender']+['status']+['patronType']+['isbn']+['searchTitle']+['searchAuthor']+['searchDate'])
 with open(fileName) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         rowCount -= 1
-        print 'Items remaining: ', rowCount
+        print('Items remaining: ', rowCount)
         borrower = row['BORROWER']
         lender = row['LENDER']
         status = row['STATUS']
         patronType = row['PATRON TYPE']
         searchOclcNum = row['OCLC']
-        print searchOclcNum
+        print(searchOclcNum)
         isbn = row['ISBN']
         searchAuthor = row['AUTHOR']
         searchTitle = row['TITLE']
@@ -53,56 +53,56 @@ with open(fileName) as csvfile:
             response = response.content
             record = BeautifulSoup(response, "lxml").find('record')
             oclcNum = record.find('controlfield', {'tag' : '001'}).text
-            print 'search oclc #'
+            print('search oclc #')
         except:
             originalTitle = searchTitle
             search = urllib.quote(searchTitle)
             response = requests.get(baseURL+search.strip()+'&count=1&format=rss&wskey='+wskey)
-            print 'search title'
+            print('search title')
             response = response.content
             record = BeautifulSoup(response, "lxml").findAll('item')
             if record != []:
                 record = record[0]
-                url = record.find('guid').text.encode('utf-8')
+                url = record.find('guid').text
                 oclcNum = url.replace('http://worldcat.org/oclc/','')
-                oclcAuthor = record.find('author').find('name').text.encode('utf-8')
+                oclcAuthor = record.find('author').find('name').text
 
         response2 = requests.get(baseURL2+oclcNum+'?servicelevel=full&classificationScheme=LibraryOfCongress&wskey='+wskey)
-        print 'search full record'
+        print('search full record')
         response2 = response2.content
         try:
             record2 = BeautifulSoup(response2, "lxml").find('record')
             try:
-                titleA = record2.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'a'}).text.encode('utf-8')
+                titleA = record2.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'a'}).text
             except:
                 titleA = ''
             try:
-                titleB = record2.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'b'}).text.encode('utf-8')
+                titleB = record2.find('datafield', {'tag' : '245'}).find('subfield', {'code' : 'b'}).text
             except:
                 titleB = ''
             oclcTitle = titleA + ' ' + titleB
-            oclcDate = record2.find('controlfield', {'tag' : '008'}).text[7:11].encode('utf-8')
+            oclcDate = record2.find('controlfield', {'tag' : '008'}).text[7:11]
             try:
-                callNumFullA = record2.find('datafield', {'tag' : '050'}).find('subfield', {'code' : 'a'}).text.encode('utf-8')
+                callNumFullA = record2.find('datafield', {'tag' : '050'}).find('subfield', {'code' : 'a'}).text
                 numStart = re.search('\d', callNumFullA)
                 callNumLetters = callNumFullA[:numStart.start()]
             except:
                 callNumFullA = ''
                 callNumLetters = ''
             try:
-                callNumFullB = record2.find('datafield', {'tag' : '050'}).find('subfield', {'code' : 'b'}).text.encode('utf-8')
+                callNumFullB = record2.find('datafield', {'tag' : '050'}).find('subfield', {'code' : 'b'}).text
             except:
                 callNumFullB = ''
             callNumFull = callNumFullA + ' ' + callNumFullB
             try:
-                oclcPublisher = record2.find('datafield', {'tag' : '260'}).find('subfield', {'code' : 'b'}).text.encode('utf-8')
+                oclcPublisher = record2.find('datafield', {'tag' : '260'}).find('subfield', {'code' : 'b'}).text
             except:
                 try:
-                    oclcPublisher = record2.find('datafield', {'tag' : '264'}).find('subfield', {'code' : 'b'}).text.encode('utf-8')
+                    oclcPublisher = record2.find('datafield', {'tag' : '264'}).find('subfield', {'code' : 'b'}).text
                 except:
                     oclcPublisher = ''
             try:
-                physDesc =  record2.find('datafield', {'tag' : '300'}).find('subfield', {'code' : 'a'}).text.encode('utf-8')
+                physDesc =  record2.find('datafield', {'tag' : '300'}).find('subfield', {'code' : 'a'}).text
             except:
                 physDesc = ''
             f.writerow([searchOclcNum]+[borrower]+[lender]+[status]+[patronType]+[isbn]+[searchTitle]+[searchAuthor]+[searchDate]+[oclcNum]+[oclcTitle]+[oclcAuthor]+[oclcPublisher]+[callNumLetters]+[callNumFull]+[physDesc]+[oclcDate])
@@ -119,4 +119,4 @@ with open(fileName) as csvfile:
 elapsedTime = time.time() - startTime
 m, s = divmod(elapsedTime, 60)
 h, m = divmod(m, 60)
-print 'Total script run time: ', '%d:%02d:%02d' % (h, m, s)
+print('Total script run time: ', '%d:%02d:%02d' % (h, m, s))
