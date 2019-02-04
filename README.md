@@ -1,4 +1,7 @@
 # oclc-api
+
+Note: Upgraded to Python 3 in 02/2019
+
 Most of these scripts require a secrets.py file in the same directory that must contain the following text (and may include other variables):
 
     wskey='[Your OCLC WSkey]'
