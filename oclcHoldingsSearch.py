@@ -37,7 +37,7 @@ with open(fileName) as csvfile:
 
 #script content
 f=csv.writer(open(fileNameWithoutExtension+'oclcSearchMatches.csv', 'w'))
-f.writerow(['searchOclcNum']+['holdingsCount'])
+f.writerow(['searchOclcNum']+['heldByMIT']+['holdingsCountNonMIT']+['holdingInstitutions'])
 f2=csv.writer(open(fileNameWithoutExtension+'oclcSearchNonMatches.csv', 'w'))
 f2.writerow(['searchOoclcNum']+['holdingsCount'])
 with open(fileName) as csvfile:
@@ -50,11 +50,12 @@ with open(fileName) as csvfile:
         else:
             searchOclcNum = ''
         print(searchOclcNum)
-        searchUrl = 'http://www.worldcat.org/webservices/catalog/content/libraries/' + searchOclcNum + '?oclcsymbol=' + oclcSymbolsString + '&wskey=' + wskey
+        searchUrl = 'http://www.worldcat.org/webservices/catalog/content/libraries/' + searchOclcNum + '?maximumLibraries=100&oclcsymbol=' + oclcSymbolsString + '&wskey=' + wskey
         print(searchUrl)
         response = requests.get(searchUrl)
         response = response.content
         records = BeautifulSoup(response, "lxml")
+        heldByMIT = False
         if records.findAll('diagnostics') != []:
             print('No match')
             f2.writerow([searchOclcNum]+['No match'])
@@ -63,10 +64,13 @@ with open(fileName) as csvfile:
             recordInstCodes = []
             for record in records:
                 instCode = record.find('institutionidentifier').find('value').text
-                recordInstCodes.append(instCode)
+                if instCode == 'MYG':
+                    heldByMIT = True
+                else:
+                    recordInstCodes.append(instCode)
                 holdingsCount = len(recordInstCodes)
             print(recordInstCodes)
-            f.writerow([searchOclcNum]+[holdingsCount])
+            f.writerow([searchOclcNum]+[heldByMIT]+[holdingsCount]+[recordInstCodes])
 
 #print script run time
 elapsedTime = time.time() - startTime
