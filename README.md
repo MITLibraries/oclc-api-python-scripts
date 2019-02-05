@@ -1,6 +1,6 @@
 # oclc-api
 
-Note: Upgraded to Python 3 in 02/2019
+**Note**: Upgraded to Python 3 in 02/2019. The Python 2.x version can be downloaded [here](https://github.com/ehanson8/oclc-api/releases)
 
 Most of these scripts require a secrets.py file in the same directory that must contain the following text (and may include other variables):
 
