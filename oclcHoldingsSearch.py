@@ -44,15 +44,20 @@ with open(fileName) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         rowCount -= 1
+        if rowCount % 200 == 0:
+            time.sleep(5)
+        if rowCount != 0 and rowCount % 3000 == 0:
+            print('sleep 5 min')
+            time.sleep(300)
         print('Items remaining: ', rowCount)
-        if ')' in row['oclcNum']:
-            searchOclcNum = row['oclcNum'][row['oclcNum'].index(')')+1:]
+        if ')' in row['oclc']:
+            searchOclcNum = row['oclc'][row['oclc'].index(')')+1:]
         else:
             searchOclcNum = ''
         print(searchOclcNum)
         searchUrl = 'http://www.worldcat.org/webservices/catalog/content/libraries/' + searchOclcNum + '?maximumLibraries=100&oclcsymbol=' + oclcSymbolsString + '&wskey=' + wskey
-        print(searchUrl)
         response = requests.get(searchUrl)
+        print(response)
         response = response.content
         records = BeautifulSoup(response, "lxml")
         heldByMIT = False
