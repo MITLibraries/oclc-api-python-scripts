@@ -44,7 +44,7 @@ with open(fileName) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         rowCount -= 1
-        if rowCount % 200 == 0:
+        if rowCount != 0 and rowCount % 200 == 0:
             time.sleep(5)
         if rowCount != 0 and rowCount % 3000 == 0:
             print('sleep 5 min')
