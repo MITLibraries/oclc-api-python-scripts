@@ -46,8 +46,8 @@ with open('oclcRecordsTitle.csv') as csvfile:
         searchTitle = row['245 - all subfields'][2:]
         originalTitle = searchTitle
         if 'b' in searchTitle:
-            searchTitle = searchTitle[:searchTitle.index('b')] + ' '
-            + searchTitle[searchTitle.index('b') + 2:]
+            searchTitle = searchTitle[:searchTitle.index('b')] + ' '\
+                + searchTitle[searchTitle.index('b') + 2:]
             if 'c' in searchTitle:
                 searchTitle = searchTitle[:searchTitle.index('c')]
             else:
@@ -58,7 +58,7 @@ with open('oclcRecordsTitle.csv') as csvfile:
             pass
         searchTitleURL = urllib.quote(searchTitle).strip()
         query = baseURL + query + 'srw.ti+%3D+"' + searchTitleURL
-        + '"&format=rss&wskey=' + wskey
+        query = query + '"&format=rss&wskey=' + wskey
         print(query)
         response = requests.get(query).content
         records = BeautifulSoup(response, 'lxml').findAll('item')

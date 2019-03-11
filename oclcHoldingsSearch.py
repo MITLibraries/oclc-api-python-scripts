@@ -36,8 +36,8 @@ with open(fileName) as csvfile:
 
 # script content
 f = csv.writer(open(fileNameWithoutExtension + 'oclcSearchMatches.csv', 'w'))
-f.writerow(['searchOclcNum'] + ['heldByMIT'] + ['holdingsCountNonMIT']
-           + ['holdingInstitutions'])
+f.writerow(['bartonId'] + ['searchOclcNum'] + ['heldByMIT']
+           + ['holdingsCountNonMIT'] + ['holdingInstitutions'])
 f2 = csv.writer(open(fileNameWithoutExtension
                 + 'oclcSearchNonMatches.csv', 'w'))
 f2.writerow(['searchOoclcNum'] + ['holdingsCount'])
@@ -51,15 +51,17 @@ with open(fileName) as csvfile:
             print('sleep 5 min')
             time.sleep(300)
         print('Items remaining: ', rowCount)
-        if ')' in row['oclc']:
-            searchOclcNum = row['oclc'][row['oclc'].index(')') + 1:]
+        bartonId = row['bartonId']
+        if ')' in row['oclcNum']:
+            searchOclcNum = row['oclcNum'][row['oclcNum'].index(')') + 1:]
         else:
-            searchOclcNum = ''
+            searchOclcNum = row['oclcNum']
         print(searchOclcNum)
         searchUrl = 'http://www.worldcat.org/'
         searchUrl = searchUrl + 'webservices/catalog/content/libraries/'
-        + searchOclcNum + '?maximumLibraries=100&oclcsymbol='
-        + oclcSymbolsString + '&wskey=' + wskey
+        searchUrl = searchUrl + searchOclcNum
+        searchUrl = searchUrl + '?maximumLibraries=100&oclcsymbol='
+        searchUrl = searchUrl + oclcSymbolsString + '&wskey=' + wskey
         response = requests.get(searchUrl)
         print(response)
         response = response.content
@@ -80,8 +82,8 @@ with open(fileName) as csvfile:
                     recordInstCodes.append(instCode)
                 holdingsCount = len(recordInstCodes)
             print(recordInstCodes)
-            f.writerow([searchOclcNum] + [heldByMIT] + [holdingsCount]
-                       + [recordInstCodes])
+            f.writerow([bartonId] + [searchOclcNum] + [heldByMIT]
+                       + [holdingsCount] + [recordInstCodes])
 
 # print script run time
 elapsedTime = time.time() - startTime

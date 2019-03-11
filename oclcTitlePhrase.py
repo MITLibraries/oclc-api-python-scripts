@@ -21,8 +21,8 @@ with open('oclcRecordsTitle.csv') as csvfile:
         searchTitle = row['245 - all subfields'][2:]
         originalTitle = searchTitle
         if 'b' in searchTitle:
-            searchTitle = searchTitle[:searchTitle.index('b')] + ' '
-            + searchTitle[searchTitle.index('b') + 2:]
+            searchTitle = searchTitle[:searchTitle.index('b')] + ' '\
+                + searchTitle[searchTitle.index('b') + 2:]
             if 'c' in searchTitle:
                 searchTitle = searchTitle[:searchTitle.index('c')]
             else:
