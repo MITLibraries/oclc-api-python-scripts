@@ -8,6 +8,9 @@ Most of these scripts require a secrets.py file in the same directory that must 
 
 More information about WSKeys is available [here](https://www.oclc.org/developer/develop/authentication/how-to-request-a-wskey.en.html).
 
+#### [downloadMarcxmlRecords.py](downloadMarcxmlRecords.py)
+Based on a list of OCLC numbers, downloads the full MARCXML records.
+
 #### [oclcHoldingsSearch.py](oclcHoldingsSearch.py)
 Based on the OCLC symbols specified in secrets.py, uses a CSV of OCLC numbers and produces CSVs of matches and non-matches for record that are held by the specified institutions. For the matches, the CSV includes how many institutions hold that title amongst the institutions specified in secrets.py.
 
