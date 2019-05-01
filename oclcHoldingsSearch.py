@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 import secrets
 import time
+import datetime
 import argparse
 
 # command line arguments
@@ -86,7 +87,5 @@ with open(fileName) as csvfile:
                        + [holdingsCount] + [recordInstCodes])
 
 # print script run time
-elapsedTime = time.time() - startTime
-m, s = divmod(elapsedTime, 60)
-h, m = divmod(m, 60)
-print('Total script run time: ', '%d:%02d:%02d' % (h, m, s))
+td = datetime.timedelta(seconds=time.time() - startTime)
+print("Elapsed time: {}".format(td))

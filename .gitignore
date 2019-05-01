@@ -53,6 +53,4 @@ data/*
 *.csv
 *.xlsx
 *.xml
-Pipfile
-Pipfile.lock
 .idea/
