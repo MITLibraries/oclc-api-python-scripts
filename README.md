@@ -8,8 +8,11 @@ Most of these scripts require a secrets.py file in the same directory that must 
 
 More information about WSKeys is available [here](https://www.oclc.org/developer/develop/authentication/how-to-request-a-wskey.en.html).
 
+#### [downloadMarcxmlRecords.py](downloadMarcxmlRecords.py)
+Based on a list of OCLC numbers, downloads the full MARCXML records. The script is designed to pause for 5 seconds every 200 requests and for 5 minutes at every 3000 requests in order to avoid time out errors from the API.
+
 #### [oclcHoldingsSearch.py](oclcHoldingsSearch.py)
-Based on the OCLC symbols specified in secrets.py, uses a CSV of OCLC numbers and produces CSVs of matches and non-matches for record that are held by the specified institutions. For the matches, the CSV includes how many institutions hold that title amongst the institutions specified in secrets.py.
+Based on the OCLC symbols specified in secrets.py, uses a CSV of OCLC numbers and produces CSVs of matches and non-matches for record that are held by the specified institutions. For the matches, the CSV includes how many institutions hold that title amongst the institutions specified in secrets.py. The script is designed to pause for 5 seconds every 200 requests and for 5 minutes at every 3000 requests in order to avoid time out errors from the API.
 
 #### [oclcIsbn.py](oclcIsbn.py)
 Retrieves OCLC numbers and titles based on a text file of ISBNs.
