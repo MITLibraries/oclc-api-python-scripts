@@ -24,16 +24,15 @@ startTime = time.time()
 wskey = secrets.wskey
 baseURL = 'http://www.worldcat.org/webservices/catalog/content/'
 
-with open(fileName) as csvfile:
-    reader = csv.DictReader(csvfile)
-    rowCount = len(list(reader))
-
 # script content
 dwnldDir = 'oclcRecords/'
 if os.path.isdir(dwnldDir) is False:
     os.makedirs(dwnldDir)
 with open(fileName) as csvfile:
     reader = csv.DictReader(csvfile)
+    with open(fileName) as csvfile:
+        reader = csv.DictReader(csvfile)
+        rowCount = len(list(reader))
     for row in reader:
         if rowCount != 0 and rowCount % 200 == 0:
             time.sleep(5)
